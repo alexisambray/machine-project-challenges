@@ -1,7 +1,7 @@
 /*
     Do not forget to encode your name, section and date of submission.
 
-    LASTNAME1, FIRSTNAME1: AMBRAY, ALEXIS                SECTION:
+    LASTNAME1, FIRSTNAME1: AMBRAY, ALEXIS                SECTION: S11
     LASTNAME2, FIRSTNAME2:                               SECTION:
 
     DATE SUBMITTED     :
@@ -20,8 +20,8 @@
 #include <string.h>
 
 #define DATE_FORMAT_LENGTH 10
-#define TOTAL_RECORDS 629
 #define NUM_OHLC_VALUES 4
+#define MAX_RECORDS 1000
 
 /* Do NOT include other header files. */
 
@@ -42,23 +42,22 @@
     You may declare any typedef that you need below this comment.
 */
 typedef char Date[DATE_FORMAT_LENGTH + 1];
-typedef Date Dates[TOTAL_RECORDS];
+typedef Date Dates[MAX_RECORDS];
 typedef double OhlcValue[NUM_OHLC_VALUES];
-typedef OhlcValue OhlcValues[TOTAL_RECORDS];
-typedef double VolumeValues[TOTAL_RECORDS];
+typedef OhlcValue OhlcValues[MAX_RECORDS];
+typedef double VolumeValues[MAX_RECORDS];
 
 /*
     Define any function that you need below this comment.
 */
-void ReadLine() {
-  char line[10];
 
-  scanf("%s", line);
-}
+int GetNumRecords() {
+  char companyCode[11];
+  int numRecords;
 
-void RemoveExtraneousLines() {
-  ReadLine();  // This removes the company code and number of records
-  ReadLine();  // This removes the blank line
+  scanf("%s %d", companyCode, &numRecords);
+
+  return numRecords;
 }
 
 void AddVolumeValue(VolumeValues volumeValues,
@@ -102,30 +101,36 @@ void ProcessLine(Dates dates,
 
 void PopulateData(Dates dates,
                   OhlcValues ohlcValues,
-                  VolumeValues volumeValues) {
-  for (int i = 0; i < TOTAL_RECORDS; i++) {
+                  VolumeValues volumeValues,
+                  const int numRecords) {
+  for (int i = 0; i < numRecords; i++) {
     ProcessLine(dates, ohlcValues, volumeValues, i);
   }
 }
 
 void OutputData(const Dates dates,
                 const OhlcValues ohlcValues,
-                const VolumeValues volumeValues) {
-  for (int i = 0; i < TOTAL_RECORDS; i++) {
-    printf("%s%15.2lf%15.2lf%15.2lf%15.2lf%15.2lf\n", dates[i], ohlcValues[i][0],
-           ohlcValues[i][1], ohlcValues[i][2], ohlcValues[i][3],
-           volumeValues[i]);
+                const VolumeValues volumeValues,
+                const int numRecords) {
+  for (int i = 0; i < numRecords; i++) {
+    printf("%s%15.2lf%15.2lf%15.2lf%15.2lf%15.2lf\n", dates[i],
+           ohlcValues[i][0], ohlcValues[i][1], ohlcValues[i][2],
+           ohlcValues[i][3], volumeValues[i]);
   }
 }
 
 int main() {
+  /* Declare your own local variables. */
   Dates dates;
   OhlcValues ohlcValues;
   VolumeValues volumeValues;
+  int numRecords;
 
-  RemoveExtraneousLines();
-  PopulateData(dates, ohlcValues, volumeValues);
-  OutputData(dates, ohlcValues, volumeValues);
+  /* Call the functions that you defined. */
+
+  numRecords = GetNumRecords();
+  PopulateData(dates, ohlcValues, volumeValues, numRecords);
+  OutputData(dates, ohlcValues, volumeValues, numRecords);
 
   return 0;
 }
