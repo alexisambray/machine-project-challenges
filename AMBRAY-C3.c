@@ -2,7 +2,6 @@
     Do NOT forget to encode your name, section and date of submission.
 
     LASTNAME1, FIRSTNAME1: AMBRAY, ALEXIS                SECTION: S11
-    LASTNAME2, FIRSTNAME2:                               SECTION:
 
     DATE SUBMITTED     :
 
@@ -83,6 +82,7 @@
 */
 #define MAX_RECORDS 1000
 #define NUM_OHLC_VALUES 4
+#define COMPANY_CODE_MAX_CHARS 5
 
 /*
     You may declare any typedef that you need below this comment.
@@ -93,7 +93,7 @@ typedef StrDate StrDates[MAX_RECORDS];
 typedef double OhlcValue[NUM_OHLC_VALUES];
 typedef OhlcValue OhlcValues[MAX_RECORDS];
 typedef double VolumeValues[MAX_RECORDS];
-typedef char CompanySymbol[11];
+typedef char CompanySymbol[COMPANY_CODE_MAX_CHARS + 1];
 /*
     TO DO: Define the functions that you need below this comment.  You are the
    one responsible in deciding what should be the function's a. return data type
@@ -114,8 +114,8 @@ int GetMinIndex(const OhlcValues ohlcValues, const int totalRecords) {
   double minValue = ohlcValues[0][NUM_OHLC_VALUES - 1];
   for (int i = 1; i < totalRecords; i++) {
     if (ohlcValues[i][NUM_OHLC_VALUES - 1] < minValue) {
-      minValue = ohlcValues[i][NUM_OHLC_VALUES - 1];
       minIndex = i;
+      minValue = ohlcValues[i][NUM_OHLC_VALUES - 1];
     }
   }
   return minIndex;
@@ -126,8 +126,8 @@ int GetMaxIndex(const OhlcValues ohlcValues, const int totalRecords) {
   double maxValue = ohlcValues[0][NUM_OHLC_VALUES - 1];
   for (int i = 1; i < totalRecords; i++) {
     if (ohlcValues[i][NUM_OHLC_VALUES - 1] > maxValue) {
-      maxValue = ohlcValues[i][NUM_OHLC_VALUES - 1];
       maxIndex = i;
+      maxValue = ohlcValues[i][NUM_OHLC_VALUES - 1];
     }
   }
   return maxIndex;
@@ -137,7 +137,9 @@ void AddDate(StrDates strDates, const StrDate strDate, const int i) {
   strcpy(strDates[i], strDate);
 }
 
-void AddOhlc(OhlcValues ohlcValues, const OhlcValue ohlcValue, const int i) {
+void AddOhlcValue(OhlcValues ohlcValues,
+                  const OhlcValue ohlcValue,
+                  const int i) {
   for (int j = 0; j < NUM_OHLC_VALUES; j++) {
     ohlcValues[i][j] = ohlcValue[j];
   }
@@ -152,7 +154,6 @@ void AddVolumeValue(VolumeValues volumeValues,
 void ProcessLine(StrDates strDates,
                  OhlcValues ohlcValues,
                  VolumeValues volumeValues,
-                 CompanySymbol companySymbol,
                  const int i) {
   StrDate strDate;
   OhlcValue ohlcValue;
@@ -161,7 +162,7 @@ void ProcessLine(StrDates strDates,
   scanf("%s %lf %lf %lf %lf %lf", strDate, &ohlcValue[0], &ohlcValue[1],
         &ohlcValue[2], &ohlcValue[3], &volumeValue);
   AddDate(strDates, strDate, i);
-  AddOhlc(ohlcValues, ohlcValue, i);
+  AddOhlcValue(ohlcValues, ohlcValue, i);
   AddVolumeValue(volumeValues, volumeValue, i);
 }
 
@@ -173,7 +174,7 @@ void ReadStockHistoricalData(StrDates strDates,
   GetCompanySymbolAndTotalRecords(companySymbol, totalRecords);
 
   for (int i = 0; i < *totalRecords; i++) {
-    ProcessLine(strDates, ohlcValues, volumeValues, companySymbol, i);
+    ProcessLine(strDates, ohlcValues, volumeValues, i);
   }
 }
 
@@ -191,8 +192,8 @@ int main() {
           4. 2D array of double values for storing the OHLC values
           5. 1D array of double for storing the volume
   */
-  CompanySymbol companySymbol;
   int totalRecords;
+  CompanySymbol companySymbol;
   StrDates strDates;
   OhlcValues ohlcValues;
   VolumeValues volumeValues;
