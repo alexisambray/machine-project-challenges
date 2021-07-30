@@ -2,9 +2,7 @@
     Do not forget to encode your name, section and date of submission.
 
     LASTNAME1, FIRSTNAME1: AMBRAY, ALEXIS                SECTION: S11
-    LASTNAME2, FIRSTNAME2:                               SECTION:
-
-    DATE SUBMITTED     :
+    DATE SUBMITTED     :  August 2, 2021
 
         CCPROG2 MP Solution for: Challenge #2
 
